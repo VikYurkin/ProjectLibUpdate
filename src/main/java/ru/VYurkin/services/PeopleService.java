@@ -8,6 +8,7 @@ import ru.VYurkin.models.Book;
 import ru.VYurkin.models.Person;
 import ru.VYurkin.repositories.PeopleRepository;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +55,9 @@ public class PeopleService {
         Optional<Person> person = peopleRepository.findById(personalId);
         if (person.isPresent()) {
             Hibernate.initialize(person.get().getBooks());
+            for (Book book : person.get().getBooks()) {
+                book.setMarkRedBook(((new Date().getTime() - book.getDateOfPerson().getTime()) / 1000 / 60 / 60 / 24) > 10);
+            }
             return person.get().getBooks();
         } else {
             return Collections.emptyList();

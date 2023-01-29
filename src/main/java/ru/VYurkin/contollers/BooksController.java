@@ -21,20 +21,36 @@ public class BooksController {
     private final BookValidator bookValidator;
 
     @Autowired
-    public BooksController(BooksService booksService, PeopleService peopleService, BookValidator bookValidator) {
+    public BooksController(BooksService booksService,
+                           PeopleService peopleService,
+                           BookValidator bookValidator) {
         this.booksService = booksService;
         this.peopleService = peopleService;
         this.bookValidator = bookValidator;
     }
 
     @GetMapping()
-    public String indexBooks(Model model){
-        model.addAttribute("books", booksService.indexBook());
+    public String indexBooks(@RequestParam(required = false) Integer page,
+                             @RequestParam(required = false) Integer books_per_page,
+                             @RequestParam(required = false) Boolean sort_by_year,
+                             Model model){
+        model.addAttribute("books", booksService.indexBook(page, books_per_page, sort_by_year));
         return "books/indexBooks";
     }
 
+    @GetMapping("/search")
+    public String searchBooks(@RequestParam(required = false) String startingWith,
+                             Model model){
+        model.addAttribute("book", booksService.searchBook(startingWith));
+        model.addAttribute("personWithBook", booksService.searchBookOwner(startingWith));
+        model.addAttribute("startingWith", startingWith);
+        return "books/searchBook";
+    }
+
     @GetMapping("/{bookId}")
-    public String showBook(@PathVariable("bookId") int bookId, Model model, @ModelAttribute("person") Person person){
+    public String showBook(@PathVariable("bookId") int bookId,
+                           Model model,
+                           @ModelAttribute("person") Person person){
         model.addAttribute("book", booksService.showBook(bookId));
         model.addAttribute("personWithBook", booksService.owner(bookId));
         model.addAttribute("people", peopleService.potentialOwner(booksService.owner(bookId)));
@@ -42,7 +58,8 @@ public class BooksController {
     }
 
     @PatchMapping("/{bookId}/add")
-    public String personGetBook(@PathVariable("bookId") int bookId, @ModelAttribute("person") Person person){
+    public String personGetBook(@PathVariable("bookId") int bookId,
+                                @ModelAttribute("person") Person person){
         booksService.personGetBook(bookId, person);
         return "redirect:/books/{bookId}";
     }
@@ -59,7 +76,8 @@ public class BooksController {
     }
 
     @PostMapping()
-    public String createBook(@ModelAttribute("book") @Valid Book book, BindingResult bindingResult){
+    public String createBook(@ModelAttribute("book") @Valid Book book,
+                             BindingResult bindingResult){
         bookValidator.validate(book, bindingResult);
         if(bindingResult.hasErrors())
             return "books/newBook";
@@ -69,13 +87,16 @@ public class BooksController {
     }
 
     @GetMapping("/{bookId}/edit")
-    public String editBook(Model model,@PathVariable("bookId") int bookId){
+    public String editBook(Model model,
+                           @PathVariable("bookId") int bookId){
         model.addAttribute("book",booksService.showBook(bookId));
         return "books/editBook";
     }
 
     @PatchMapping("/{bookId}")
-    public String updateBook(@ModelAttribute("book") @Valid Book book, BindingResult bindingResult, @PathVariable("bookId") int bookId){
+    public String updateBook(@ModelAttribute("book") @Valid Book book,
+                             BindingResult bindingResult,
+                             @PathVariable("bookId") int bookId){
         bookValidator.validate(book, bindingResult);
         if(bindingResult.hasErrors())
             return "books/editBook";

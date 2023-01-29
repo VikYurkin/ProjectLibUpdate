@@ -36,6 +36,11 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "person_id", referencedColumnName = "person_id")
     private Person owner;
+
+
+    @Transient
+    private boolean markRedBook;
+
     public Book() {
     }
 
@@ -92,5 +97,13 @@ public class Book {
 
     public void setOwner(Person owner) {
         this.owner = owner;
+    }
+
+    public boolean isMarkRedBook() {
+        return markRedBook;
+    }
+
+    public void setMarkRedBook(boolean markRedBook) {
+        this.markRedBook = markRedBook;
     }
 }

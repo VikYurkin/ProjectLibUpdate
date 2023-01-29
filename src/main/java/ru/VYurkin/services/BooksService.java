@@ -2,11 +2,14 @@ package ru.VYurkin.services;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.VYurkin.models.Book;
 import ru.VYurkin.models.Person;
 import ru.VYurkin.repositories.BooksRepository;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +23,31 @@ public class BooksService {
         this.booksRepository = booksRepository;
     }
 
-    public List<Book> indexBook() {
-        return booksRepository.findAll();
+    public List<Book> indexBook(Integer page, Integer bookPerPage, Boolean sort_by_year) {
+        if(page!=null&bookPerPage!=null) {if (sort_by_year!=null) {if(sort_by_year){return booksRepository.findAll(PageRequest.of(page, bookPerPage, Sort.by("yearWritten"))).getContent();}
+                                                                   else{return booksRepository.findAll(PageRequest.of(page, bookPerPage)).getContent();
+                                                                   }
+                                          } else {return booksRepository.findAll(PageRequest.of(page, bookPerPage)).getContent();
+                                          }
+        }else{if (sort_by_year!=null) {if(sort_by_year){return booksRepository.findAll(Sort.by("yearWritten"));
+                                       }else{return booksRepository.findAll();
+                                       }
+              } else {return booksRepository.findAll();
+              }
+        }
+    }
+
+    public Book searchBook(String startingWith){
+        if(startingWith==null){return null;}
+        Optional<Book> book = booksRepository.findByNameBookStartingWith(startingWith).stream().findAny();
+        return book.orElse(null);
+    }
+
+    public Person searchBookOwner(String startingWith){
+        if(startingWith==null){return null;}
+        Optional<Book> book = booksRepository.findByNameBookStartingWith(startingWith).stream().findAny();
+        if(book.isEmpty()){return null;}
+        return book.orElse(null).getOwner();
     }
 
     public Book showBook(int bookId) {
@@ -61,6 +87,7 @@ public class BooksService {
         Book book = booksRepository.findById(bookId).orElse(null);
         if(book.getOwner()!=null){return;}
           book.setOwner(owner);
+          book.setDateOfPerson(new Date());
     }
 
     @Transactional
@@ -69,6 +96,7 @@ public class BooksService {
         if(book.getOwner()==null){return;}
         book.getOwner().getBooks().remove(book);
         book.setOwner(null);
+        book.setDateOfPerson(null);
     }
 
 }

@@ -1,13 +1,12 @@
 package ru.VYurkin.config;
 
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import java.util.EnumSet;
 
 public class MySpringMvccDispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -28,7 +27,7 @@ public class MySpringMvccDispatcherServletInitializer extends AbstractAnnotation
     }
 
     @Override
-    public void onStartup(ServletContext aServletContext) throws ServletException{
+    public void onStartup(ServletContext aServletContext) throws ServletException {
         super.onStartup(aServletContext);
         registerCharacterEncodingFilter(aServletContext);
         registerHiddenFieldFilter(aServletContext);

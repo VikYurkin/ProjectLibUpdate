@@ -1,6 +1,6 @@
 # ProjectLibUpdate
 
-Technology: Spring MVC, Spring Core, Hibernate and Spring Data JPA, Thymeleaf, PostgreSQL.
+Technology:Maven, Spring MVC, Spring Core, Hibernate and Spring Data JPA, Thymeleaf, PostgreSQL.
 
 Catalog of library
 

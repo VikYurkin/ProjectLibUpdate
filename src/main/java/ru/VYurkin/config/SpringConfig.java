@@ -1,5 +1,6 @@
 package ru.VYurkin.config;
 
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -78,11 +79,15 @@ public class SpringConfig implements WebMvcConfigurer {
         return dataSource;
     }
 
+    @Bean(initMethod = "migrate")
+    public Flyway FlywayMigrationStrategy(){
+        return Flyway.configure().dataSource(dataSource()).load();
+    }
+
     private Properties hibernateProperties(){
         Properties properties = new Properties();
         properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
         properties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
-
         return properties;
     }
 

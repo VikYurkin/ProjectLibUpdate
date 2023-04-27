@@ -9,9 +9,8 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
-  <name>ProjectLibUpdate Maven Webapp</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <name>Viktor Iurkin</name>
+  <url>https://github.com/VikYurkin/ProjectLibUpdate</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
